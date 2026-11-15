@@ -1,0 +1,534 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Yui ❤️</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  background: radial-gradient(circle at top, #fff0f5, #ffc5d5, #ff9eb9);
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 390px;
+  padding: 30px 20px;
+  background: rgba(255,255,255,.92);
+  border: 2px solid white;
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 15px 50px #a82e5540;
+}
+
+h1 {
+  color: #d92761;
+  font-size: 29px;
+}
+
+p {
+  color: #875568;
+  line-height: 1.6;
+}
+
+.top-heart {
+  font-size: 55px;
+  animation: heartbeat 1.2s infinite;
+}
+
+@keyframes heartbeat {
+  50% { transform: scale(1.18); }
+}
+
+/* Floating hearts */
+
+.floating-heart {
+  position: fixed;
+  bottom: -40px;
+  color: #ff356d;
+  opacity: .55;
+  pointer-events: none;
+  z-index: 0;
+  animation: rise linear forwards;
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(-115vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Buttons */
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  min-height: 65px;
+  margin-top: 25px;
+}
+
+button {
+  border: none;
+  padding: 14px 25px;
+  border-radius: 30px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#yes {
+  color: white;
+  background: linear-gradient(135deg,#ff2869,#e6004c);
+  box-shadow: 0 5px 15px #ff286955;
+}
+
+#no {
+  color: #a33b5e;
+  background: #ffe0eb;
+  position: relative;
+  z-index: 10;
+}
+
+/* Balloon */
+
+#balloon-area {
+  display: none;
+  padding: 15px;
+  cursor: pointer;
+}
+
+.balloon {
+  width: 180px;
+  height: 190px;
+  margin: auto;
+  animation: balloonFloat 2.5s ease-in-out infinite;
+  filter: drop-shadow(12px 15px 12px #9b245344);
+}
+
+@keyframes balloonFloat {
+  0%,100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-23px) rotate(4deg);
+  }
+}
+
+.balloon svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.pop {
+  animation: balloonPop .4s forwards;
+}
+
+@keyframes balloonPop {
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Popup */
+
+#popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: #43091dcc;
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+}
+
+.popup-card {
+  width: 100%;
+  max-width: 360px;
+  padding: 25px;
+  border-radius: 25px;
+  background: linear-gradient(145deg,#fff,#ffe5ef);
+  text-align: center;
+  animation: appear .6s ease;
+  box-shadow: 0 15px 50px #0005;
+}
+
+@keyframes appear {
+  from {
+    transform: scale(.4) rotate(-8deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+.gif {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 15px;
+}
+
+.message {
+  color: #d91f60;
+  font-size: 23px;
+  font-weight: bold;
+}
+
+#confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.close {
+  margin-top: 12px;
+  background: #ed3470;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div id="hearts"></div>
+<canvas id="confetti"></canvas>
+
+<div class="card">
+
+  <div class="top-heart">❤️</div>
+
+  <h1 id="heading">Yui,</h1>
+
+  <h1 id="question">Will you be mine? 💗</h1>
+
+  <p id="description">
+    From Zulthrax,<br>
+    Someone who has a special question for you.
+  </p>
+
+  <div class="buttons" id="buttons">
+    <button id="yes">YES ❤️</button>
+    <button id="no">NO 🙈</button>
+  </div>
+
+  <div id="balloon-area">
+
+    <div class="balloon" id="balloon">
+
+      <svg viewBox="0 0 180 220">
+        <defs>
+          <radialGradient id="redBalloon"
+            cx="30%" cy="25%" r="75%">
+            <stop offset="0%" stop-color="#ffb5ca"/>
+            <stop offset="25%" stop-color="#ff477d"/>
+            <stop offset="70%" stop-color="#e00048"/>
+            <stop offset="100%" stop-color="#850027"/>
+          </radialGradient>
+        </defs>
+
+        <path
+          d="M90 155 C70 139 12 100 20 55
+          C27 10 72 10 90 42
+          C108 10 153 10 160 55
+          C168 100 110 139 90 155Z"
+          fill="url(#redBalloon)"
+          stroke="#ff9eb8"
+          stroke-width="1.5"
+        />
+
+        <ellipse cx="53" cy="43" rx="10" ry="22"
+          fill="#fff" opacity=".38"
+          transform="rotate(-30 53 43)"/>
+
+        <path d="M83 155 L90 165 L97 155Z"
+          fill="#b90040"/>
+
+        <path d="M90 165 Q65 178 100 190 Q120 198 105 210"
+          stroke="#9d234b"
+          stroke-width="1.5"
+          fill="none"/>
+      </svg>
+
+    </div>
+
+    <h2 style="color:#df2865">
+      Tap my heart balloon! 🎈
+    </h2>
+
+  </div>
+
+  <p id="footer">Made with ❤️ by Zulthrax</p>
+
+</div>
+
+<div id="popup">
+
+  <div class="popup-card">
+
+    <h1>YAYYY! ❤️</h1>
+
+    <img class="gif"
+      src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
+      alt="Celebration animation">
+
+    <h2 class="message">
+      Always Be Mine, Yui ❤️
+    </h2>
+
+    <p>
+      You make ordinary moments feel magical.
+      Here's a little reminder that you are special! 💗
+    </p>
+
+    <p>Forever sending you smiles! 💕</p>
+
+    <button class="close" onclick="closePopup()">
+      Close 💗
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+// FLOATING HEARTS
+
+const heartSymbols = ["❤️","💗","💕","💖","💘"];
+
+function createHeart() {
+
+  const heart = document.createElement("div");
+
+  heart.className = "floating-heart";
+
+  heart.innerText =
+    heartSymbols[
+      Math.floor(Math.random()*heartSymbols.length)
+    ];
+
+  heart.style.left = Math.random()*100 + "vw";
+
+  heart.style.fontSize =
+    (15+Math.random()*25) + "px";
+
+  heart.style.animationDuration =
+    (5+Math.random()*6) + "s";
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 11000);
+}
+
+setInterval(createHeart, 350);
+
+
+// NO BUTTON
+
+const no = document.getElementById("no");
+
+function moveNo() {
+
+  const padding = 10;
+
+  const maxX =
+    window.innerWidth - no.offsetWidth - padding;
+
+  const maxY =
+    window.innerHeight - no.offsetHeight - padding;
+
+  no.style.position = "fixed";
+
+  no.style.left =
+    Math.max(padding,Math.random()*maxX) + "px";
+
+  no.style.top =
+    Math.max(padding,Math.random()*maxY) + "px";
+}
+
+no.addEventListener("pointerenter", moveNo);
+
+no.addEventListener("pointerdown", (e) => {
+  e.preventDefault();
+  moveNo();
+});
+
+
+// YES BUTTON
+
+document.getElementById("yes")
+.addEventListener("click", () => {
+
+  document.getElementById("heading").innerText =
+    "Yui, YOU SAID YES! 🥹";
+
+  document.getElementById("question").innerText =
+    "You made my day! ❤️";
+
+  document.getElementById("description").innerText =
+    "One little surprise is waiting for you...";
+
+  document.getElementById("buttons").style.display =
+    "none";
+
+  document.getElementById("balloon-area").style.display =
+    "block";
+
+  document.getElementById("footer").innerText =
+    "A special moment from Zulthrax 💗";
+
+});
+
+
+// BALLOON POP
+
+document.getElementById("balloon-area")
+.addEventListener("click", () => {
+
+  const balloon = document.getElementById("balloon");
+
+  balloon.classList.add("pop");
+
+  setTimeout(() => {
+
+    document.getElementById("popup").style.display =
+      "flex";
+
+    launchConfetti();
+
+  }, 400);
+
+});
+
+
+// CONFETTI
+
+function launchConfetti() {
+
+  const canvas =
+    document.getElementById("confetti");
+
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const pieces = [];
+
+  for(let i=0; i<120; i++) {
+
+    pieces.push({
+
+      x: Math.random()*canvas.width,
+
+      y: -Math.random()*canvas.height,
+
+      size: 4+Math.random()*7,
+
+      speed: 2+Math.random()*5,
+
+      rotation: Math.random()*6
+
+    });
+
+  }
+
+  let frame = 0;
+
+  function draw() {
+
+    ctx.clearRect(
+      0,0,canvas.width,canvas.height
+    );
+
+    pieces.forEach(p => {
+
+      p.y += p.speed;
+      p.rotation += .05;
+
+      ctx.save();
+
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rotation);
+
+      ctx.fillStyle =
+        ["#ff2869","#ff91b5","#ffcfdf","#d90050"]
+        [Math.floor(Math.random()*4)];
+
+      ctx.fillRect(
+        -p.size/2,
+        -p.size/2,
+        p.size,
+        p.size
+      );
+
+      ctx.restore();
+
+    });
+
+    frame++;
+
+    if(frame < 180) {
+      requestAnimationFrame(draw);
+    } else {
+      ctx.clearRect(
+        0,0,canvas.width,canvas.height
+      );
+    }
+
+  }
+
+  draw();
+
+}
+
+
+// CLOSE POPUP
+
+function closePopup() {
+
+  document.getElementById("popup").style.display =
+    "none";
+
+}
+
+
+// RESIZE
+
+window.addEventListener("resize", () => {
+
+  const canvas =
+    document.getElementById("confetti");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+});
+
+</script>
+
+</body>
+</html>
